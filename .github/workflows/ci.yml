@@ -1,0 +1,38 @@
+name: Deploy MkDocs site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install mkdocs mkdocs-material
+
+      - name: Build MkDocs site
+        run: |
+          mkdocs build
+
+      - name: Deploy to GitHub Pages
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git clone https://github.com/WildeTechSolutions/docs-public.git docs-public
+          cp -r site/* docs-public/
+          cd docs-public
+          git add .
+          git commit -m 'Deploy site'
+          git push https://WildeTechSolutions:${{ secrets.DEPLOY_TOKEN }}@github.com/WildeTechSolutions/docs-public.git main
