@@ -27,12 +27,7 @@ jobs:
           mkdocs build
 
       - name: Deploy to GitHub Pages
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
-          git clone https://github.com/WildeTechSolutions/docs-public.git docs-public
-          cp -r site/* docs-public/
-          cd docs-public
-          git add .
-          git commit -m 'Deploy site'
-          git push https://WildeTechSolutions:${{ secrets.DEPLOY_TOKEN }}@github.com/WildeTechSolutions/docs-public.git main
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PAGES_TOKEN }}
+          publish_dir: ./site
